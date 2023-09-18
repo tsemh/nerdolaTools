@@ -1,41 +1,60 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title layout:title-pattern="$LAYOUT_TITLE | $CONTENT_TITLE">Nerdola Tools</title>
-    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+    <title>Nerdola Tools</title>
     <link rel="stylesheet" href="css/main.css">
-    <script src="https://kit.fontawesome.com/7e3ab3f2af.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="js/manga.js"></script>
 </head>
 <body>
+<nav>
+    <img class="logo" src="" alt="logo do site nerdolaTools">
+    <ul>
+        <li><a href="#">Home page</a></li>
+        <li><a href="#">Mangá Download</a></li>
+        <li><a href="#">Novel Download</a></li>
+        <li><a href="#">Pdf Converter</a></li>
+    </ul>
+</nav>
 
-<h1 class="text-center">Baixar Mangá</h1>
+<main>
+<h1 class="text-center">Mangá Download</h1>
 
 <div class="container">
     <form id="mangaForm">
-        <div class="form-group">
-            <label for="urlInput">URL do Mangá:</label>
-            <input type="text" id="urlInput" name="url" placeholder="Cole a URL aqui" required>
+        <div class="form-groups">
+            <div class="form-group">
+                <label for="urlInput">URL do Mangá:</label>
+                <input type="text" id="urlInput" name="url" placeholder="Paste the URL" required>
+            </div>
+            <div class="form-group">
+                <label for="endpointSelect">Select the host:</label>
+                <select id="endpointSelect" name="endpoint" required>
+                    <option value="mangareader">Mangareader</option>
+                    <option value="outro-endpoint">Another endpoints</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Select the file:</label>
+                <select id="extension" name="extension" required>
+                    <option value="mangareader">PDF</option>
+                    <option value="extension">PDF Kindle</option>
+                    <option value="extension">CBZ</option>
+                    <option value="extension">CBM</option>
+                </select>
+            </div>
         </div>
         <div class="form-group">
-            <label for="endpointSelect">Selecione o Endpoint:</label>
-            <select id="endpointSelect" name="endpoint" required>
-                <option value="mangareader">Mangareader</option>
-                <option value="outro-endpoint">Outro Endpoint</option>
-                <!-- Adicione mais opções de endpoint conforme necessário -->
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="nameZipInput">Nome do Arquivo ZIP:</label>
-            <input type="text" id="nameZipInput" name="nameZip" placeholder="Nome do arquivo ZIP" required>
-        </div>
-        <div class="form-group">
-            <button type="submit">Baixar Mangá</button>
+            <button type="submit" class="submit">Download</button>
         </div>
     </form>
 </div>
+</main>
 
+<footer>
+    <h3>Parcerias</h3>
+    <p>E-mail: nerdolaTools@gmai.com</p>
+</footer>
 </body>
 </html>
