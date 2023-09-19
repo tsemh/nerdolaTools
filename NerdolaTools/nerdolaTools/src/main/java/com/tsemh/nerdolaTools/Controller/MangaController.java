@@ -7,91 +7,47 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-
 @RestController()
-@RequestMapping("/download-manga")
+@RequestMapping("/manga-download")
 public class MangaController {
 
     @PostMapping("/mangareader")
-    public ResponseEntity<byte[]> downloadManga(@RequestBody DownloadRequest request) {
-        String url = request.getUrl();
-        request.setNameZip("Teste");
-        String nameZip = request.getNameZip();
+    public DownloadRequest mangaRequest(@RequestBody DownloadRequest downloadRequest) {
 
+    }
+
+    private void webScraping(String url) throws IOException {
+
+    }
+    private void retrieveImg(String url) throws IOException {
         try {
             Document document = Jsoup.connect(url).get();
-            Elements imgs = document.select("img");
+            Elements imgElement = document.select("img");
+        } catch (IOException e) {
+            System.out.println("Error When recovering img tag: "+e);
+        }
 
-            ByteArrayOutputStream zipBytes = new ByteArrayOutputStream();
-            try (ZipOutputStream zipOut = new ZipOutputStream(zipBytes)) {
-                int imageCount = 1;
-
-                for (Element img : imgs) {
-                    String imageUrlRelative = img.attr("src");
-                    byte[] imageBytes = downloadImage(imageUrlRelative, url);
-
-                    // Adicione a imagem ao arquivo ZIP com um nome único
-                    ZipEntry zipEntry = new ZipEntry("image" + imageCount + ".jpg");
-                    zipOut.putNextEntry(zipEntry);
-                    zipOut.write(imageBytes);
-                    zipOut.closeEntry();
-
-                    imageCount++;
-                }
+    }
+    private void retrieveSrcOfImg(String url) throws IOException {
+        try {
+            for(Element imgTag : imgTags) {
+                String src = imgTag.attr("src");
             }
-
-            byte[] zipFileBytes = zipBytes.toByteArray();
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "C:\\downloads\\" + nameZip + ".zip");
-
-            return new ResponseEntity<>(zipFileBytes, headers, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (IOException e) {
+            System.out.println(("Error when recovering src attribute: "+e));
         }
     }
 
-    private byte[] downloadImage(String imageUrl, String pageUrl) throws Exception {
-        if (!imageUrl.startsWith("http://") && !imageUrl.startsWith("https://")) {
-            URL absoluteUrl = new URL(new URL(pageUrl), imageUrl);
-            imageUrl = absoluteUrl.toString();
-        }
-
-        URL url = new URL(imageUrl);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-
-        try (InputStream is = connection.getInputStream();
-             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-
-            while ((bytesRead = is.read(buffer)) != -1) {
-                baos.write(buffer, 0, bytesRead);
-            }
-
-            return baos.toByteArray();
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-    }
 }
