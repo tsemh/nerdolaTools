@@ -1,53 +1,61 @@
 package com.tsemh.nerdolaTools.Controller;
 
+import com.itextpdf.text.Image;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.tsemh.nerdolaTools.Model.entity.DownloadRequest;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 
 @RestController()
 @RequestMapping("/manga-download")
 public class MangaController {
 
-    @PostMapping("/mangareader")
-    public DownloadRequest mangaRequest(@RequestBody DownloadRequest downloadRequest) {
+    DownloadRequest downloadrequest;
 
+    @PostMapping("/mangareader")
+    public DownloadRequest mangaRequest(@RequestBody DownloadRequest downloadRequest) throws IOException {
+        String url = downloadrequest.getUrl();
     }
 
     private void webScraping(String url) throws IOException {
-
+        Elements imgElements = retrieveImg(url);
+        retrieveSrcFromImg(url, imgElements);
     }
-    private void retrieveImg(String url) throws IOException {
+
+    private Elements retrieveImg(String url) throws IOException {
         try {
             Document document = Jsoup.connect(url).get();
-            Elements imgElement = document.select("img");
+            return document.select("img");
         } catch (IOException e) {
-            System.out.println("Error When recovering img tag: "+e);
+            System.out.println("Error When recovering img tag: " + e);
+            return new Elements();
         }
-
     }
-    private void retrieveSrcOfImg(String url) throws IOException {
-        try {
-            for(Element imgTag : imgTags) {
-                String src = imgTag.attr("src");
-            }
-        } catch (IOException e) {
-            System.out.println(("Error when recovering src attribute: "+e));
+    private void retrieveSrcFromImg(String url, Elements imgElement) throws IOException {
+        for(Element imgTag : imgElement) {
+            String src = imgTag.attr("src");
         }
+    }
+    private Image retrieveImageFromSrc(String src) {
+        try {
+            Url newSrc = new url(src);
+            return Image.getInstance(newSrc);
+        } catch (IOException e) {
+            System.out.println("Error when accessing image URL: " + e);
+            return null;
+        }
+    }
+
+    private void pdfCreator() throws FileNotFoundException {
+
     }
 
 }
